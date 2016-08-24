@@ -14,38 +14,26 @@ filetype = config.get('setup', 'filetype')
 
 snapshot = 1
 
-#CPU_Load
+# CPU_Load
 cpu_usage = psutil.cpu_percent(interval=1, percpu=True)
-#Overall_Memory_Usage
+# Overall_Memory_Usage
 mem_usage = psutil.Process().memory_info()[0]
-#Hard_Disk_Memory_Usage
+# Hard_Disk_Memory_Usage
 disk_usage = psutil.disk_usage('/')
-#Overal_Virtual_Memory_Usage
-total_memory =  psutil.virtual_memory()
-#print("Total:",total_memory.total/1000000, "mb")
-#print("Used:",total_memory.used/1000000, "mb")
-#print("Free:",total_memory.free/1000000, "mb")
-#print("Percent:",total_memory.percent, "percents")
-
-#IO_Information
+# Overal_Virtual_Memory_Usage
+total_memory = psutil.virtual_memory()
+# IO_Information
 disk_part = psutil.disk_io_counters(perdisk=False)
-#print(disk_part)
-
-#Network_Information
+# Network_Information
 net_inf = psutil.net_io_counters()
-#print("recived bytes:", net_inf.bytes_recv, "bytes")
-#print("sent bytes:", net_inf.bytes_sent, "bytes")
-#print("recived packets:", net_inf.packets_recv, "packets")
-#print("sent packets:", net_inf.packets_sent, "packets")
 
-def write_to_txt(myfile='result1.txt'):
-#Writing to txt file
+def write_to_txt(myfile='result.txt'):
     global snapshot
     print("info >> top(SNAPSHOT {0})".format(snapshot))
     fmt = '%Y-%m-%d %H:%M:%S %Z'
     currenttime = datetime.datetime.now()
     tstmp = datetime.datetime.strftime(currenttime, fmt)
-    text_file = open('result1.txt', "w")
+    text_file = open(myfile, "w")
     text_file.write("Snapshot {0}:, timestamp - {1}:\n".format(snapshot, tstmp))
     text_file.write("CPU: {0}\n".format(cpu_usage[0]))
     text_file.write("MEM: {0}\n".format(mem_usage/1048576))
@@ -71,8 +59,7 @@ def mydict(kf):
     b = kf._fields
     final_dict = dict(zip(a,b))
     return final_dict
-
-def jsontop(myfile="result.json"):
+def write_to_json(myfile="result.json"):
     global snapshot
     print("info >> top(SNAPSHOT {0})".format(snapshot))
     fmt = '%Y-%m-%d %H:%M:%S %Z'
@@ -93,18 +80,15 @@ def jsontop(myfile="result.json"):
     jsonf.write("\n\n")
     jsonf.close()
     snapshot += 1
-
-
 if filetype == "txt":
     print(filetype + ' in' + timeint + ' minute(s)')
     schedule.every(int(timeint)).minutes.do(write_to_txt)
 elif filetype == "json":
     print(filetype + ' in' + timeint + ' minute(s)')
-    schedule.every(int(timeint)).minutes.do(jsontop)
+    schedule.every(int(timeint)).minutes.do(write_to_json)
 else:
     print("check type in conf")
     quit()
 while True:
     schedule.run_pending()
-    time.sleep(7)
-
+    time.sleep(5)
