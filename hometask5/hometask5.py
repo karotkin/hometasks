@@ -33,7 +33,6 @@ def dec(f):
     return inner if decorator_switch else f
 
 class var(object):
-    @dec
     def __init__(self):
         #CPU_Load
         self.cpu_usage = psutil.cpu_percent(interval=1, percpu=True)
