@@ -35,16 +35,16 @@ class dicts(var):
         b = kf._fields
         final_dict = dict(zip(a,b))
         return final_dict
-class kf1(dicts):
+class txtf(dicts):
     def __init__(self):
-        super(kf1, self).__init__()
+        super(txtf, self).__init__()
     def write_to_txt(self, myfile='result.txt'):
         global snapshot
         print("info >> top(SNAPSHOT {0})".format(snapshot))
         fmt = '%Y-%m-%d %H:%M:%S %Z'
         currenttime = datetime.datetime.now()
         tstmp = datetime.datetime.strftime(currenttime, fmt)
-        text_file = open('result.txt', "w")
+        text_file = open('result1.txt', "w")
         text_file.write("Snapshot {0}:, timestamp - {1}:\n".format(snapshot, tstmp))
         text_file.write("CPU: {0}\n".format(self.cpu_usage[0]))
         text_file.write("MEM: {0}\n".format(self.mem_usage/1048576))
@@ -64,9 +64,9 @@ class kf1(dicts):
         text_file.write("\n")
         text_file.close()
         snapshot += 1
-class kf2(dicts):
+class jsonf(dicts):
     def __init__(self):
-        super(kf2, self).__init__()
+        super(jsonf, self).__init__()
     def write_to_json(self, myfile="result.json"):
         self.__init__()
         global snapshot
@@ -90,10 +90,10 @@ class kf2(dicts):
         jsonf.close()
         snapshot += 1
 def txtjob():
-    x = kf1()
+    x = txtf()
     x.write_to_txt()
 def jsonjob():
-    y = kf2()
+    y = jsonf()
     y.write_to_json()
 
 if filetype == "txt":
